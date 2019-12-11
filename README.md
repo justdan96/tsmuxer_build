@@ -25,17 +25,22 @@ This image is designed to build tsMuxer. So once you have the image, browse to t
 
 *Linux*
 ```
-docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_linux_docker.sh"
+docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_linux_with_gui_docker.sh"
 ```
 
-*Windows*
+*Windows 32-bit*
 ```
-docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_mxe_docker.sh"
+docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_mxe32_with_gui_docker.sh"
+```
+
+*Windows 64-bit*
+```
+docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_mxe_with_gui_docker.sh"
 ```
 
 *OSX*
 ```
-docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_osxcross_docker.sh"
+docker run -it --rm -v $(pwd):/workdir -w="/workdir" justdan96/tsmuxer_build bash -c ". rebuild_osxcross_with_gui_docker.sh"
 ```
 
-The executable binary will be saved to the "\bin" folder.
+The executable binaries will be saved to the "\bin" folder.
