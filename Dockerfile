@@ -80,3 +80,12 @@ RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/g++
 RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/gcc
 RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-g++ /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/g++
 RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-gcc /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/gcc
+
+# install linuxdeploy and the Qt plugin
+RUN curl -sLo /usr/local/bin/linuxdeploy-x86_64.AppImage "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+RUN curl -sLo /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+RUN chmod +x /usr/local/bin/linuxdeploy-x86_64.AppImage
+RUN chmod +x /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage
+RUN cd /tmp && /usr/local/bin/linuxdeploy-x86_64.AppImage --appimage-extract
+RUN cd /tmp && /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage --appimage-extract
+RUN mv /tmp/squashfs-root /opt/linuxdeploy
