@@ -1,6 +1,10 @@
 FROM ubuntu:disco
 MAINTAINER Dan Bryant (daniel.bryant@linux.com)
 
+ENV TZ=Europe/London
+ENV DEBIAN_FRONTEND=noninteractive 
+
+
 # install basic dependencies for tsMuxer Linux build
 RUN apt-get update
 RUN apt-get install -y nano
@@ -13,7 +17,7 @@ RUN apt-get install -y git patch lzma-dev libxml2-dev libssl-dev python curl wge
 RUN apt-get install -y openssl
 
 # install Qt5 dependencies for building tsMuxerGUI for Linux
-RUN apt-get install -y qt5-default qt5-qmake qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5
+RUN apt-get install -y qt5-default qt5-qmake qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev libqt5multimediawidgets5 libqt5multimedia5-plugins libqt5multimedia5 qttools5-dev
 
 # setup osxcross
 RUN mkdir /usr/lib/osxcross
@@ -28,7 +32,7 @@ ENV PATH=/usr/lib/osxcross/bin:/usr/lib/osxcross/tools:$PATH
 RUN /usr/lib/osxcross/bin/osxcross-conf && /usr/lib/osxcross/bin/osxcross-macports install freetype && /usr/lib/osxcross/bin/osxcross-macports install zlib
 
 # setup Qt5 for MacOS 
-RUN curl -sLo /tmp/qt5-mac-5.13.2.tgz "https://s3.eu.cloud-object-storage.appdomain.cloud/justdan96-public/qt5-mac-5.13.2.tgz"
+RUN curl -sLo /tmp/qt5-mac-5.13.2.tgz "https://justdan96-public.s3.eu.cloud-object-storage.appdomain.cloud/qt5-mac-5.13.2-1.tgz"
 RUN tar -xzf /tmp/qt5-mac-5.13.2.tgz --strip-components=1 -C /usr/lib/osxcross/macports/pkgs/opt/local
 RUN rm -f /tmp/qt5-mac-5.13.2.tgz
 
@@ -89,3 +93,8 @@ RUN chmod +x /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage
 RUN cd /tmp && /usr/local/bin/linuxdeploy-x86_64.AppImage --appimage-extract
 RUN cd /tmp && /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage --appimage-extract
 RUN mv /tmp/squashfs-root /opt/linuxdeploy
+
+# use native versions of lconvert, lrelease and lupdate
+RUN cp /usr/bin/lconvert /usr/lib/osxcross/macports/pkgs/opt/local/bin/lconvert
+RUN cp /usr/bin/lrelease /usr/lib/osxcross/macports/pkgs/opt/local/bin/lrelease
+RUN cp /usr/bin/lupdate /usr/lib/osxcross/macports/pkgs/opt/local/bin/lupdate
