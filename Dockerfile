@@ -44,46 +44,16 @@ RUN cp /usr/bin/moc /usr/lib/osxcross/macports/pkgs/opt/local/bin/moc
 RUN mv /usr/lib/osxcross/macports/pkgs/opt/local/bin/rcc /usr/lib/osxcross/macports/pkgs/opt/local/bin/rcc_native
 RUN cp /usr/bin/rcc /usr/lib/osxcross/macports/pkgs/opt/local/bin/rcc
 
-# setup MXE
+# setup MXE repo (no longer used)
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C6BF758A33A3A276
 RUN add-apt-repository -y 'deb https://mirror.mxe.cc/repos/apt stretch main'
 RUN apt-get update
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-zlib
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-harfbuzz
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-freetype
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-cmake
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-ccache
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-openssl
-RUN apt-get install -y mxe-i686-w64-mingw32.static-zlib
-RUN apt-get install -y mxe-i686-w64-mingw32.static-harfbuzz
-RUN apt-get install -y mxe-i686-w64-mingw32.static-freetype
-RUN apt-get install -y mxe-i686-w64-mingw32.static-cmake
-RUN apt-get install -y mxe-i686-w64-mingw32.static-ccache
-RUN apt-get install -y mxe-i686-w64-mingw32.static-openssl
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-autotools
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-ccache
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-cc
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-cmake
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-cmake-conf
-RUN apt-get install -y mxe-x86-64-pc-linux-gnu-mxe-conf
 
-# setup Qt5 dependency for tsMuxerGUI build for MXE
-RUN apt-get install -y mxe-x86-64-w64-mingw32.static-qt5
-RUN apt-get install -y mxe-i686-w64-mingw32.static-qt5
-
-# manually fix some weird MXE symlinks
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/x86_64-w64-mingw32.static-g++
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/x86_64-w64-mingw32.static-gcc
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/i686-w64-mingw32.static-g++
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/i686-w64-mingw32.static-gcc
-RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-g++ /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/x86_64-w64-mingw32.static-g++
-RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-gcc /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/x86_64-w64-mingw32.static-gcc
-RUN ln -s /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-g++ /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/i686-w64-mingw32.static-g++
-RUN ln -s /usr/lib/mxe/usr/bin/i686-w64-mingw32.static-gcc /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/i686-w64-mingw32.static-gcc
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/g++
-RUN rm -f /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/gcc
-RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-g++ /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/g++
-RUN ln -s /usr/lib/mxe/usr/bin/x86_64-w64-mingw32.static-gcc /usr/lib/mxe/usr/x86_64-pc-linux-gnu/bin/gcc
+# install MXE with GCC 8.3
+RUN mkdir -p /usr/lib/mxe
+RUN curl -sLo /tmp/mxe-b03103d-20200302.tgz "https://objectstorage.uk-london-1.oraclecloud.com/n/lrglg6cc7bwg/b/bucket-20191211-2226/o/mxe-b03103d-20200302-1.tgz"
+RUN tar -xzf /tmp/mxe-b03103d-20200302.tgz -C /usr/lib/mxe
+RUN rm -f mxe-b03103d-20200302.tgz
 
 # install linuxdeploy and the Qt plugin
 RUN curl -sLo /usr/local/bin/linuxdeploy-x86_64.AppImage "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
