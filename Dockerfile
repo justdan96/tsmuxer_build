@@ -68,3 +68,6 @@ RUN mv /tmp/squashfs-root /opt/linuxdeploy
 RUN cp /usr/bin/lconvert /usr/lib/osxcross/macports/pkgs/opt/local/bin/lconvert
 RUN cp /usr/bin/lrelease /usr/lib/osxcross/macports/pkgs/opt/local/bin/lrelease
 RUN cp /usr/bin/lupdate /usr/lib/osxcross/macports/pkgs/opt/local/bin/lupdate
+
+# install Linux tools required to build tsMuxer and create ZIP for distribution
+RUN apt-get install -y cmake gcc make ninja-build zip
