@@ -23,7 +23,7 @@ RUN apt-get install -y qtbase5-dev qtbase5-dev-tools qtdeclarative5-dev libqt5op
 
 # setup osxcross with Qt5
 RUN mkdir /usr/lib/osxcross
-RUN curl -sLo /tmp/osxcross-7c090bd-20201206.tgz "https://justdan96-public.s3.eu.cloud-object-storage.appdomain.cloud/osxcross-7c090bd-20201206.tgz"
+RUN curl -sLo /tmp/osxcross-7c090bd-20201206.tgz "https://objectstorage.uk-london-1.oraclecloud.com/n/lrglg6cc7bwg/b/bucket-20191211-2226/o/osxcross-7c090bd-20201206.tgz"
 RUN tar -xzf /tmp/osxcross-7c090bd-20201206.tgz -C /
 RUN rm -f /tmp/osxcross-7c090bd-20201206.tgz
 
@@ -49,13 +49,14 @@ RUN curl -sLo /usr/local/bin/linuxdeploy-x86_64.AppImage "https://github.com/lin
 RUN curl -sLo /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
 RUN chmod +x /usr/local/bin/linuxdeploy-x86_64.AppImage
 RUN chmod +x /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage
-RUN cd /tmp && /usr/local/bin/linuxdeploy-x86_64.AppImage --appimage-extract
-RUN cd /tmp && /usr/local/bin/linuxdeploy-plugin-qt-x86_64.AppImage --appimage-extract
-RUN mv /tmp/squashfs-root /opt/linuxdeploy
+
+# fix for issue of linuxdeploy in Docker containers
+RUN dd if=/dev/zero of=/tmp/linuxdeploy-plugin-qt-x86_64.AppImage conv=notrunc bs=1 count=3 seek=8
+RUN dd if=/dev/zero of=/tmp/linuxdeploy-x86_64.AppImage conv=notrunc bs=1 count=3 seek=8
 
 # install Linux tools required to build tsMuxer and create ZIP for distribution
 RUN apt-get install -y cmake gcc make ninja-build zip
-RUN apt-get upgrade
+RUN apt-get upgrade -y
 
 # we need to set up XAR so it can be found by osxcross
 RUN apt-get install -y autoconf openssl
@@ -71,3 +72,7 @@ RUN ln -s /usr/lib/osxcross/macports/pkgs/opt/local/lib/libz.a /usr/lib/osxcross
 RUN ln -s /usr/lib/osxcross/macports/pkgs/opt/local/lib/libbz2.a /usr/lib/osxcross/macports/pkgs/opt/local/lib/libbz2-static.a
 RUN ln -s /usr/lib/osxcross/macports/pkgs/opt/local/lib/libpng.a /usr/lib/osxcross/macports/pkgs/opt/local/lib/libpng-static.a
 RUN ln -s /usr/lib/osxcross/macports/pkgs/opt/local/lib/libpng16.a /usr/lib/osxcross/macports/pkgs/opt/local/lib/libpng16-static.a
+
+# fix issue with AppImage complaining about missing folders
+RUN mkdir /usr/lib/x86_64-linux-gnu/qt5/plugins/mediaservice
+RUN mkdir /usr/lib/x86_64-linux-gnu/qt5/plugins/audio
